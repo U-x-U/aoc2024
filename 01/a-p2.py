@@ -43,10 +43,10 @@ def do_case(inp: str, sample=False):
         if x in d:
             d[x] += 1
 
-    sum = 0
+    s = 0
     for x in l:
-        sum += x * d[x]
-    print(sum)
+        s += x * d[x]
+    print(s)
     return  # RETURNED VALUE DOESN'T DO ANYTHING, PRINT THINGS INSTEAD
 
 
