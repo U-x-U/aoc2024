@@ -33,10 +33,11 @@ def do_case(inp: str, sample=False):
     # READ THE PROBLEM FROM TOP TO BOTTOM OK
     def sprint(*a, **k): sample and print(*a, **k)
     lines = inp.splitlines()
-    lines = list(map(ints, lines))
-    diffs = list(map(list_diff, lines))
-    safeness = [all(map(lambda x: 1<=x and x <= 3, diff))
-        or all(map(lambda x: -3 <= x and x <= -1, diff)) for diff in diffs]
+    lines = map(ints, lines)
+    diffs = map(list_diff, lines)
+    safeness = map(lambda diff:
+                   all(map(lambda x: 1<=x and x <= 3, diff)) or all(map(lambda x: -3 <= x and x <= -1, diff)),
+                   diffs)
     print(sum(safeness))
     return  # RETURNED VALUE DOESN'T DO ANYTHING, PRINT THINGS INSTEAD
 
