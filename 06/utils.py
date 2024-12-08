@@ -581,6 +581,9 @@ class Grid(typing.Generic[T]):
     
     def __getitem__(self, coord: typing.Union[typing.Tuple[int, int], typing.List[int]]) -> T:
         return self.grid[coord[0]][coord[1]]
+
+    def __setitem__(self, coord: typing.Union[typing.Tuple[int, int], typing.List[int]], val: T) -> T:
+        self.grid[coord[0]][coord[1]] = val
 #endregion
 
 #region List/Vector operations
