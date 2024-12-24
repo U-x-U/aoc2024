@@ -73,14 +73,10 @@ def do_case(inp: str, sample=False):
 
     # all inputs of "OR" gate is either b or c.
     # use this to check output of "x_i and y_i"
-    is_b_or_c = set()
-    for i1, _, i2, _, _ in b_or_c:
-        is_b_or_c.add(i1)
-        is_b_or_c.add(i2)
+    is_b_or_c = {i for i1, _, i2, _, _ in b_or_c for i in (i1, i2)}
     for x1, _, _, _, res in x_and_y:
         if res in is_b_or_c:
             d[res] = 'b' + x1[1:]
-            is_b_or_c.remove(res)
         elif x1[1:] != '00':
             print("{0} is one of the swapped, should be b{1}".format(res, x1[1:]))
     for i1, _, i2, _, _ in b_or_c:
@@ -91,14 +87,10 @@ def do_case(inp: str, sample=False):
 
     # all non-x-non-y inputs of "AND" gate is either a or d.
     # use this to check output of "x_i xor y_i"
-    is_a_or_d = set()
-    for i1, _, i2, _, _ in a_and_d:
-        is_a_or_d.add(i1)
-        is_a_or_d.add(i2)
+    is_a_or_d = {i for i1, _, i2, _, _ in a_and_d for i in (i1, i2)}
     for x1, _, _, _, res in x_xor_y:
         if res in is_a_or_d:
             d[res] = 'a' + x1[1:]
-            is_a_or_d.remove(res)
         elif x1[1:] != '00':
             print("{0} is one of the swapped, should be a{1}".format(res, x1[1:]))
     for o1, _, o2, _, _ in a_and_d:
@@ -108,14 +100,8 @@ def do_case(inp: str, sample=False):
             d[o1] = 'd{:02}'.format(int(d[o2][1:]) - 1)
     nlines = []
     for line in lines:
-        nline = [None] * 5
-        for i in [0, 2, 4]:
-            if line[i] in d:
-                line[i] = d[line[i]]
-        nline[1], nline[3], nline[4] = line[1], line[3], line[4]
-        i1, i2 = line[0], line[2]
-        i1, i2 = tuple(sorted([i1, i2]))
-        nline[0], nline[2] = i1, i2
+        nline = [d.get(line[0], line[0]), line[1], d.get(line[2], line[2]), line[3], d.get(line[4], line[4])]
+        nline[0], nline[2] = sorted([nline[0], nline[2]])
         nlines.append(nline)
     for i1, op, i2, arrow, o in sorted(nlines):
         if op == 'XOR' and  i1 == 'x00' and i2 == 'y00' and o == 'z00' or \
@@ -146,7 +132,6 @@ def do_case(inp: str, sample=False):
     # prints (after reordering and clustering)
     # z37 is one of the swapped, should be b37
     # a37 XOR d36 -> rrn, output should be z37
-    # a37 AND d36 -> vhj, output should be c37
     # x37 AND y37 -> z37, output should be b37
     #
     # rqf is one of the swapped, should be b21
@@ -163,6 +148,9 @@ def do_case(inp: str, sample=False):
     #
     # d20 is not inferenced b.c. a21 is swapped. d20 is hvv.
     # b20 OR c20 -> hvv, output should be d20
+    #
+    # c37 is not inferenced b.c. b37 is swapped. c37 is vhj.
+    # a37 AND d36 -> vhj, output should be c37
     #
     # c31 <-  rdn
     # d16 <-  fkb
